@@ -5,8 +5,8 @@ export default async function handler(req) {
   const device = searchParams.get('device');
 
   const repos = {
-    ratdeck: { repo: 'defidude/Ratdeck', file: 'ratdeck-firmware.bin' },
-    ratcom:  { repo: 'defidude/RatCom',  file: 'ratcom-firmware.bin' }
+    ratdeck: { repo: 'defidude/Ratdeck', file: 'ratdeck-firmware.zip' },
+    ratcom:  { repo: 'defidude/RatCom',  file: 'ratcom-firmware.zip' }
   };
 
   const cfg = repos[device];
@@ -65,7 +65,7 @@ export default async function handler(req) {
 
   return new Response(binResp.body, {
     headers: {
-      'Content-Type': 'application/octet-stream',
+      'Content-Type': 'application/zip',
       'Content-Disposition': `attachment; filename="${asset.name}"`,
       'Cache-Control': 'public, max-age=300'
     }

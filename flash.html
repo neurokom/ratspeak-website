@@ -1526,6 +1526,7 @@
     </div>
 </footer>
 
+<script src="https://unpkg.com/jszip@3.10.1/dist/jszip.min.js"></script>
 <script type="module">
 (function() {
     'use strict';
@@ -1539,13 +1540,23 @@
         return esptoolModule;
     }
 
+    // ── Binary string helper ───────────────────────────
+    function uint8ToBstr(u8) {
+        var chunks = [];
+        var CHUNK = 8192;
+        for (var i = 0; i < u8.length; i += CHUNK) {
+            chunks.push(String.fromCharCode.apply(null, u8.subarray(i, i + CHUNK)));
+        }
+        return chunks.join('');
+    }
+
     // ── State ──────────────────────────────────────────
     var state = {
         device: null,       // 'tdeck' | 'cardputer' | 'custom'
         port: null,         // Web Serial port (unopened — esptool manages open/close)
         connected: false,
         firmwareReady: false,
-        firmwareBuffer: null, // ArrayBuffer from GitHub release
+        firmwareZip: null,  // ArrayBuffer of ZIP from GitHub release
         customFile: null,
         flashing: false,
         transport: null,
@@ -1557,7 +1568,7 @@
             name: 'T-Deck Plus',
             sub: 'ESP32-S3 \u00b7 Ratdeck Firmware',
             accent: 'green',
-            firmware: 'ratdeck-firmware.bin',
+            firmware: 'ratdeck-firmware.zip',
             firmwareSize: 'Loading from GitHub...',
             apiDevice: 'ratdeck'
         },
@@ -1565,7 +1576,7 @@
             name: 'Cardputer Adv',
             sub: 'ESP32-S3 \u00b7 RatCom Firmware',
             accent: 'blue',
-            firmware: 'ratcom-firmware.bin',
+            firmware: 'ratcom-firmware.zip',
             firmwareSize: 'Loading from GitHub...',
             apiDevice: 'ratcom'
         },
@@ -1579,11 +1590,8 @@
         }
     };
 
-    var FLASH_OPTIONS = {
-        tdeck:     { flashMode: 'qio', flashSize: '16MB', flashFreq: '80m' },
-        cardputer: { flashMode: 'dio', flashSize: '8MB',  flashFreq: '80m' },
-        custom:    { flashMode: 'dio', flashSize: 'detect', flashFreq: '80m' }
-    };
+    // Default flash options for custom single-bin uploads
+    var CUSTOM_FLASH_DEFAULTS = { flashMode: 'dio', flashSize: 'detect', flashFreq: '80m' };
 
     // ── Terminal adapter for esptool-js ────────────────
     function createTerminal() {
@@ -1625,7 +1633,7 @@
         state.device = deviceId;
         state.connected = false;
         state.firmwareReady = false;
-        state.firmwareBuffer = null;
+        state.firmwareZip = null;
         state.customFile = null;
         state.port = null;
         state.transport = null;
@@ -1698,7 +1706,7 @@
                 return resp.arrayBuffer();
             })
             .then(function(buffer) {
-                state.firmwareBuffer = buffer;
+                state.firmwareZip = buffer;
                 state.firmwareReady = true;
                 document.getElementById('presetSize').textContent = formatBytes(buffer.byteLength) + ' \u00b7 Ready to flash';
                 updateFlashBtn();
@@ -1866,6 +1874,70 @@
         }
     }
 
+    // ── Prepare flash file array from ZIP or single bin ─
+    async function prepareFileArray(logMessage) {
+        var isCustomSingleBin = state.device === 'custom' && state.customFile
+            && state.customFile.name.toLowerCase().endsWith('.bin');
+
+        if (isCustomSingleBin) {
+            // Custom single .bin — flash at 0x10000 (app offset)
+            var buf = await state.customFile.arrayBuffer();
+            var bstr = uint8ToBstr(new Uint8Array(buf));
+            logMessage('Custom firmware: ' + state.customFile.name + ' (' + formatBytes(buf.byteLength) + ')', '');
+            return {
+                fileArray: [{ data: bstr, address: 0x10000 }],
+                flashOptions: CUSTOM_FLASH_DEFAULTS
+            };
+        }
+
+        // ZIP-based firmware (preset devices or custom .zip)
+        var zipBuffer;
+        if (state.device === 'custom' && state.customFile) {
+            zipBuffer = await state.customFile.arrayBuffer();
+        } else {
+            zipBuffer = state.firmwareZip;
+        }
+
+        var zip = await window.JSZip.loadAsync(zipBuffer);
+
+        // Read manifest.json from ZIP
+        var manifestFile = zip.file('manifest.json');
+        if (!manifestFile) {
+            throw new Error('ZIP does not contain manifest.json');
+        }
+        var manifest = JSON.parse(await manifestFile.async('string'));
+        logMessage('Firmware manifest: ' + manifest.parts.length + ' parts', '');
+
+        // Extract each part
+        var fileArray = [];
+        var totalSize = 0;
+        for (var i = 0; i < manifest.parts.length; i++) {
+            var part = manifest.parts[i];
+            var partFile = zip.file(part.path);
+            if (!partFile) {
+                throw new Error('ZIP missing file: ' + part.path);
+            }
+            var partData = await partFile.async('uint8array');
+            var address = parseInt(part.offset, 16);
+            fileArray.push({
+                data: uint8ToBstr(partData),
+                address: address
+            });
+            totalSize += partData.length;
+            logMessage('  ' + part.path + ' @ 0x' + address.toString(16) + ' (' + formatBytes(partData.length) + ')', '');
+        }
+        logMessage('Total firmware size: ' + formatBytes(totalSize), '');
+
+        return {
+            fileArray: fileArray,
+            flashOptions: {
+                flashMode: manifest.flashMode || 'dio',
+                flashSize: manifest.flashSize || 'detect',
+                flashFreq: manifest.flashFreq || '80m'
+            }
+        };
+    }
+
     // ── Flash Process (Real esptool-js) ────────────────
     window.startFlash = async function() {
         if (!state.connected || !state.firmwareReady || state.flashing) return;
@@ -1909,20 +1981,9 @@
             var esptool = await loadEsptool();
             logMessage('esptool-js loaded', 'log-green');
 
-            // 2. Prepare firmware as binary string (esptool-js expects string, not Uint8Array)
+            // 2. Prepare firmware parts from ZIP (or single bin for custom)
             setProgress(5, 'Preparing firmware...');
-            var firmwareBytes;
-            if (state.device === 'custom' && state.customFile) {
-                var arrayBuf = await state.customFile.arrayBuffer();
-                firmwareBytes = new Uint8Array(arrayBuf);
-            } else {
-                firmwareBytes = new Uint8Array(state.firmwareBuffer);
-            }
-            var firmwareData = '';
-            for (var i = 0; i < firmwareBytes.length; i++) {
-                firmwareData += String.fromCharCode(firmwareBytes[i]);
-            }
-            logMessage('Firmware size: ' + formatBytes(firmwareBytes.length), '');
+            var prepared = await prepareFileArray(logMessage);
 
             // 3. Create Transport from the raw serial port
             setProgress(8, 'Connecting to bootloader...');
@@ -1932,13 +1993,12 @@
 
             // 4. Create ESPLoader
             var terminal = createTerminal();
-            var loaderOptions = {
+            var esploader = new esptool.ESPLoader({
                 transport: transport,
-                baudrate: 115200,
+                baudrate: 921600,
                 terminal: terminal,
                 romBaudrate: 115200
-            };
-            var esploader = new esptool.ESPLoader(loaderOptions);
+            });
             state.esploader = esploader;
 
             // 5. Connect to bootloader (enters download mode, detects chip, uploads stub)
@@ -1956,26 +2016,20 @@
                 logMessage('Chip verified: ESP32-S3', 'log-green');
             }
 
-            // 7. Write flash
+            // 7. Write flash — separate parts at individual addresses
             setProgress(15, 'Writing firmware...');
-            logMessage('Starting flash write at 0x0...', '');
-
-            var flashOptions = FLASH_OPTIONS[state.device] || FLASH_OPTIONS.custom;
-            var fileArray = [{
-                data: firmwareData,
-                address: 0x0
-            }];
+            logMessage('Flashing ' + prepared.fileArray.length + ' part(s)...', '');
 
             await esploader.writeFlash({
-                fileArray: fileArray,
-                flashSize: flashOptions.flashSize,
-                flashMode: flashOptions.flashMode,
-                flashFreq: flashOptions.flashFreq,
-                eraseAll: true,
+                fileArray: prepared.fileArray,
+                flashSize: prepared.flashOptions.flashSize,
+                flashMode: prepared.flashOptions.flashMode,
+                flashFreq: prepared.flashOptions.flashFreq,
+                eraseAll: false,
                 compress: true,
                 reportProgress: function(fileIndex, written, total) {
                     var pct = 15 + (written / total) * 75;
-                    setProgress(pct, 'Writing firmware... (' + formatBytes(written) + ' / ' + formatBytes(total) + ')');
+                    setProgress(pct, 'Writing part ' + (fileIndex + 1) + '/' + prepared.fileArray.length + '...');
                 }
             });
 
