@@ -232,27 +232,6 @@
             pointer-events: none;
         }
 
-        .flash-hero__tag {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            font-family: var(--font-mono);
-            font-size: 12px;
-            font-weight: 500;
-            color: var(--green);
-            letter-spacing: 1.5px;
-            text-transform: uppercase;
-            margin-bottom: 20px;
-            opacity: 0.8;
-        }
-
-        .flash-hero__tag-dot {
-            width: 6px; height: 6px;
-            border-radius: 50%;
-            background: var(--green);
-            animation: glowPulse 2.5s ease-in-out infinite;
-        }
-
         .flash-hero__title {
             font-family: var(--font-sans);
             font-weight: 700;
@@ -945,7 +924,7 @@
 
         .progress-log {
             margin-top: 16px;
-            max-height: 120px;
+            max-height: 200px;
             overflow-y: auto;
             padding: 12px 14px;
             background: rgba(28, 35, 51, 0.6);
@@ -1175,10 +1154,6 @@
 
 <!-- ── Hero ────────────────────────────────────────────── -->
 <section class="flash-hero">
-    <div class="flash-hero__tag">
-        <span class="flash-hero__tag-dot"></span>
-        Web Flasher
-    </div>
     <h1 class="flash-hero__title">Flash Firmware</h1>
     <p class="flash-hero__sub">Deploy Ratspeak firmware to your ESP32 device directly from the browser. Select your hardware, connect via USB, and flash.</p>
 
@@ -1551,19 +1526,30 @@
     </div>
 </footer>
 
-<script>
+<script type="module">
 (function() {
     'use strict';
+
+    // ── esptool-js lazy loader ─────────────────────────
+    var esptoolModule = null;
+    async function loadEsptool() {
+        if (!esptoolModule) {
+            esptoolModule = await import('https://unpkg.com/esptool-js@0.5.7/bundle.js');
+        }
+        return esptoolModule;
+    }
 
     // ── State ──────────────────────────────────────────
     var state = {
         device: null,       // 'tdeck' | 'cardputer' | 'custom'
-        port: null,         // Web Serial port
+        port: null,         // Web Serial port (unopened — esptool manages open/close)
         connected: false,
         firmwareReady: false,
         firmwareBuffer: null, // ArrayBuffer from GitHub release
         customFile: null,
-        flashing: false
+        flashing: false,
+        transport: null,
+        esploader: null
     };
 
     var DEVICES = {
@@ -1593,6 +1579,34 @@
         }
     };
 
+    var FLASH_OPTIONS = {
+        tdeck:     { flashMode: 'qio', flashSize: '16MB', flashFreq: '80m' },
+        cardputer: { flashMode: 'dio', flashSize: '8MB',  flashFreq: '80m' },
+        custom:    { flashMode: 'dio', flashSize: 'detect', flashFreq: '80m' }
+    };
+
+    // ── Terminal adapter for esptool-js ────────────────
+    function createTerminal() {
+        var logEl = document.getElementById('progressLog');
+        return {
+            clean: function() {
+                logEl.innerHTML = '';
+            },
+            writeLine: function(data) {
+                var entry = document.createElement('span');
+                entry.textContent = data;
+                logEl.appendChild(entry);
+                logEl.scrollTop = logEl.scrollHeight;
+            },
+            write: function(data) {
+                var entry = document.createElement('span');
+                entry.textContent = data;
+                logEl.appendChild(entry);
+                logEl.scrollTop = logEl.scrollHeight;
+            }
+        };
+    }
+
     // ── Navbar scroll effect ───────────────────────────
     var navbar = document.getElementById('navbar');
     window.addEventListener('scroll', function() {
@@ -1614,6 +1628,8 @@
         state.firmwareBuffer = null;
         state.customFile = null;
         state.port = null;
+        state.transport = null;
+        state.esploader = null;
 
         var dev = DEVICES[deviceId];
         var sel = document.getElementById('deviceSelection');
@@ -1707,7 +1723,14 @@
             sel.classList.remove('hiding');
         });
 
-        // Disconnect if connected
+        // Disconnect transport if active
+        if (state.transport) {
+            try { state.transport.disconnect(); } catch(e) {}
+            state.transport = null;
+        }
+        state.esploader = null;
+
+        // Close port if it was opened
         if (state.port) {
             try { state.port.close(); } catch(e) {}
             state.port = null;
@@ -1717,6 +1740,7 @@
     };
 
     // ── Connection ─────────────────────────────────────
+    // Only requests the port — does NOT open it. esptool-js Transport manages open/close.
     window.connectDevice = function() {
         if (state.connected || state.flashing) return;
         if (!('serial' in navigator)) return;
@@ -1726,7 +1750,7 @@
         var txt = document.getElementById('statusText');
 
         btn.className = 'connect-btn connect-btn--connecting';
-        btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="animation: spinSlow 1s linear infinite;"><path d="M21 12a9 9 0 11-6.219-8.56"/></svg> Connecting...';
+        btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="animation: spinSlow 1s linear infinite;"><path d="M21 12a9 9 0 11-6.219-8.56"/></svg> Selecting...';
         dot.className = 'connect-status__dot connect-status__dot--waiting';
         txt.className = 'connect-status__text';
         txt.textContent = 'Waiting for device selection...';
@@ -1734,20 +1758,17 @@
         navigator.serial.requestPort({ filters: [] })
             .then(function(port) {
                 state.port = port;
-                return port.open({ baudRate: 115200 });
-            })
-            .then(function() {
                 state.connected = true;
 
                 btn.className = 'connect-btn connect-btn--connected';
-                btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Device Connected';
+                btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Device Selected';
                 dot.className = 'connect-status__dot connect-status__dot--on';
                 txt.className = 'connect-status__text connect-status__text--on';
-                txt.textContent = 'Connected via USB Serial';
+                txt.textContent = 'Device selected';
 
                 // Show device info
                 var info = document.getElementById('deviceInfo');
-                var portInfo = state.port.getInfo();
+                var portInfo = port.getInfo();
                 var vendor = portInfo.usbVendorId ? '0x' + portInfo.usbVendorId.toString(16).toUpperCase().padStart(4, '0') : 'Unknown';
                 var product = portInfo.usbProductId ? '0x' + portInfo.usbProductId.toString(16).toUpperCase().padStart(4, '0') : 'Unknown';
                 info.textContent = 'VID: ' + vendor + '  PID: ' + product;
@@ -1759,7 +1780,7 @@
                 resetConnectionUI();
                 if (err.name !== 'NotFoundError') {
                     var txt2 = document.getElementById('statusText');
-                    txt2.textContent = 'Connection failed: ' + err.message;
+                    txt2.textContent = 'Selection failed: ' + err.message;
                     txt2.style.color = 'var(--red)';
                 }
             });
@@ -1845,8 +1866,8 @@
         }
     }
 
-    // ── Flash Process (Simulated) ──────────────────────
-    window.startFlash = function() {
+    // ── Flash Process (Real esptool-js) ────────────────
+    window.startFlash = async function() {
         if (!state.connected || !state.firmwareReady || state.flashing) return;
 
         state.flashing = true;
@@ -1863,49 +1884,144 @@
         var log = document.getElementById('progressLog');
         log.innerHTML = '';
 
-        var stages = [
-            { pct: 5,   status: 'Connecting to bootloader...', log: 'Entering download mode...', logClass: 'log-orange' },
-            { pct: 10,  status: 'Detecting chip...', log: 'Chip detected: ESP32-S3 (revision v0.2)', logClass: 'log-green' },
-            { pct: 15,  status: 'Erasing flash...', log: 'Erasing flash region 0x0000 - 0x3FFFFF', logClass: '' },
-            { pct: 25,  status: 'Erasing flash...', log: 'Flash erased successfully', logClass: 'log-green' },
-            { pct: 30,  status: 'Writing bootloader...', log: 'Writing bootloader @ 0x0000 (16384 bytes)', logClass: '' },
-            { pct: 40,  status: 'Writing partition table...', log: 'Writing partition table @ 0x8000 (3072 bytes)', logClass: '' },
-            { pct: 50,  status: 'Writing application...', log: 'Writing application @ 0x10000...', logClass: '' },
-            { pct: 65,  status: 'Writing application...', log: 'Written 524288 bytes (50%)', logClass: '' },
-            { pct: 80,  status: 'Writing application...', log: 'Written 1048576 bytes (100%)', logClass: '' },
-            { pct: 90,  status: 'Verifying...', log: 'Verifying flash contents...', logClass: 'log-orange' },
-            { pct: 95,  status: 'Verifying...', log: 'Hash verified: SHA-256 match', logClass: 'log-green' },
-            { pct: 100, status: 'Complete', log: 'Flash complete. Rebooting device...', logClass: 'log-green' }
-        ];
+        var statusEl = document.getElementById('progressStatus');
+        var pctEl = document.getElementById('progressPct');
+        var barEl = document.getElementById('progressBar');
 
-        var i = 0;
-        function runStage() {
-            if (i >= stages.length) {
-                setTimeout(function() { showResult(true); }, 600);
-                return;
-            }
-
-            var s = stages[i];
-            document.getElementById('progressStatus').textContent = s.status;
-            document.getElementById('progressPct').textContent = s.pct + '%';
-            document.getElementById('progressBar').style.width = s.pct + '%';
-
+        function logMessage(text, cssClass) {
             var entry = document.createElement('span');
-            entry.className = s.logClass;
-            entry.textContent = '> ' + s.log;
+            if (cssClass) entry.className = cssClass;
+            entry.textContent = '> ' + text;
             log.appendChild(entry);
             log.scrollTop = log.scrollHeight;
-
-            i++;
-            var delay = 300 + Math.random() * 700;
-            if (s.pct >= 50 && s.pct <= 80) delay = 600 + Math.random() * 800;
-            setTimeout(runStage, delay);
         }
 
-        runStage();
+        function setProgress(pct, statusText) {
+            pctEl.textContent = Math.round(pct) + '%';
+            barEl.style.width = pct + '%';
+            if (statusText) statusEl.textContent = statusText;
+        }
+
+        try {
+            // 1. Load esptool-js
+            setProgress(2, 'Loading esptool...');
+            logMessage('Loading esptool-js...', 'log-orange');
+            var esptool = await loadEsptool();
+            logMessage('esptool-js loaded', 'log-green');
+
+            // 2. Prepare firmware bytes
+            setProgress(5, 'Preparing firmware...');
+            var firmwareData;
+            if (state.device === 'custom' && state.customFile) {
+                var arrayBuf = await state.customFile.arrayBuffer();
+                firmwareData = new Uint8Array(arrayBuf);
+            } else {
+                firmwareData = new Uint8Array(state.firmwareBuffer);
+            }
+            logMessage('Firmware size: ' + formatBytes(firmwareData.length), '');
+
+            // 3. Create Transport from the raw serial port
+            setProgress(8, 'Connecting to bootloader...');
+            logMessage('Creating serial transport...', '');
+            var transport = new esptool.Transport(state.port);
+            state.transport = transport;
+
+            // 4. Create ESPLoader
+            var terminal = createTerminal();
+            var loaderOptions = {
+                transport: transport,
+                baudrate: 115200,
+                terminal: terminal,
+                romBaudrate: 115200
+            };
+            var esploader = new esptool.ESPLoader(loaderOptions);
+            state.esploader = esploader;
+
+            // 5. Connect to bootloader (enters download mode, detects chip, uploads stub)
+            setProgress(10, 'Entering bootloader...');
+            logMessage('Connecting to ESP32 bootloader...', 'log-orange');
+            var chipName = await esploader.main();
+            logMessage('Chip detected: ' + chipName, 'log-green');
+
+            // 6. Validate chip for known devices
+            if (state.device === 'tdeck' || state.device === 'cardputer') {
+                var chipLower = chipName.toLowerCase();
+                if (!chipLower.includes('esp32-s3') && !chipLower.includes('esp32s3')) {
+                    throw new Error('Expected ESP32-S3 for ' + DEVICES[state.device].name + ', but detected ' + chipName + '. Please check your device.');
+                }
+                logMessage('Chip verified: ESP32-S3', 'log-green');
+            }
+
+            // 7. Write flash
+            setProgress(15, 'Writing firmware...');
+            logMessage('Starting flash write at 0x0...', '');
+
+            var flashOptions = FLASH_OPTIONS[state.device] || FLASH_OPTIONS.custom;
+            var fileArray = [{
+                data: firmwareData,
+                address: 0x0
+            }];
+
+            await esploader.writeFlash({
+                fileArray: fileArray,
+                flashSize: flashOptions.flashSize,
+                flashMode: flashOptions.flashMode,
+                flashFreq: flashOptions.flashFreq,
+                eraseAll: false,
+                compress: true,
+                reportProgress: function(fileIndex, written, total) {
+                    var pct = 15 + (written / total) * 75;
+                    setProgress(pct, 'Writing firmware... (' + formatBytes(written) + ' / ' + formatBytes(total) + ')');
+                }
+            });
+
+            logMessage('Flash write complete', 'log-green');
+
+            // 8. Hard reset to reboot into firmware
+            setProgress(95, 'Resetting device...');
+            logMessage('Resetting device...', 'log-orange');
+            await esploader.hardReset();
+            logMessage('Device reset complete', 'log-green');
+
+            // 9. Disconnect transport
+            setProgress(100, 'Complete');
+            try { await transport.disconnect(); } catch(e) {}
+            state.transport = null;
+            state.esploader = null;
+
+            logMessage('Flash complete! Device is rebooting into new firmware.', 'log-green');
+
+            // 10. Show success
+            setTimeout(function() { showResult(true); }, 600);
+
+        } catch (err) {
+            // Clean up transport/esploader on error
+            if (state.transport) {
+                try { await state.transport.disconnect(); } catch(e) {}
+                state.transport = null;
+            }
+            state.esploader = null;
+
+            var errorMsg = err.message || String(err);
+
+            // Provide specific messages for common failures
+            if (errorMsg.includes('Failed to execute \'open\'') || errorMsg.includes('NetworkError')) {
+                logMessage('Error: Could not open serial port. Is another program using it?', 'log-red');
+            } else if (errorMsg.includes('Timeout') || errorMsg.includes('timeout')) {
+                logMessage('Error: Bootloader connection timed out. Try holding BOOT button while clicking Flash, then release.', 'log-red');
+            } else if (errorMsg.includes('ESP32-S3') || errorMsg.includes('Expected')) {
+                logMessage('Error: ' + errorMsg, 'log-red');
+            } else if (errorMsg.includes('disconnect') || errorMsg.includes('device has been lost')) {
+                logMessage('Error: Device disconnected during flash. Please reconnect and try again.', 'log-red');
+            } else {
+                logMessage('Error: ' + errorMsg, 'log-red');
+            }
+
+            showResult(false, errorMsg);
+        }
     };
 
-    function showResult(success) {
+    function showResult(success, errorMessage) {
         state.flashing = false;
 
         var resultEl = document.getElementById('flashResult');
@@ -1923,7 +2039,7 @@
             iconEl.className = 'flash-result__icon flash-result__icon--error';
             svgEl.innerHTML = '<line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>';
             titleEl.textContent = 'Flash Failed';
-            descEl.textContent = 'An error occurred during flashing. Please reconnect and try again.';
+            descEl.textContent = errorMessage || 'An error occurred during flashing. Please reconnect and try again.';
         }
 
         resultEl.classList.add('active');
@@ -1935,10 +2051,13 @@
         document.getElementById('progressBar').style.width = '0%';
         document.getElementById('progressLog').innerHTML = '';
 
-        var btn = document.getElementById('flashBtn');
         state.flashing = false;
+        state.transport = null;
+        state.esploader = null;
+        // Keep state.port valid for re-flash
         updateFlashBtn();
 
+        var btn = document.getElementById('flashBtn');
         btn.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> Flash Firmware';
     };
 
