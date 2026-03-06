@@ -1909,16 +1909,20 @@
             var esptool = await loadEsptool();
             logMessage('esptool-js loaded', 'log-green');
 
-            // 2. Prepare firmware bytes
+            // 2. Prepare firmware as binary string (esptool-js expects string, not Uint8Array)
             setProgress(5, 'Preparing firmware...');
-            var firmwareData;
+            var firmwareBytes;
             if (state.device === 'custom' && state.customFile) {
                 var arrayBuf = await state.customFile.arrayBuffer();
-                firmwareData = new Uint8Array(arrayBuf);
+                firmwareBytes = new Uint8Array(arrayBuf);
             } else {
-                firmwareData = new Uint8Array(state.firmwareBuffer);
+                firmwareBytes = new Uint8Array(state.firmwareBuffer);
             }
-            logMessage('Firmware size: ' + formatBytes(firmwareData.length), '');
+            var firmwareData = '';
+            for (var i = 0; i < firmwareBytes.length; i++) {
+                firmwareData += String.fromCharCode(firmwareBytes[i]);
+            }
+            logMessage('Firmware size: ' + formatBytes(firmwareBytes.length), '');
 
             // 3. Create Transport from the raw serial port
             setProgress(8, 'Connecting to bootloader...');
