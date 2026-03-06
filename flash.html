@@ -1984,9 +1984,7 @@
             // 8. Hard reset to reboot into firmware
             setProgress(95, 'Resetting device...');
             logMessage('Resetting device...', 'log-orange');
-            await transport.setDTR(false);
-            await new Promise(function(r) { setTimeout(r, 100); });
-            await transport.setDTR(true);
+            await esploader.after('hard_reset');
             logMessage('Device reset complete', 'log-green');
 
             // 9. Disconnect transport
