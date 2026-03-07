@@ -1444,7 +1444,7 @@
                                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
                             </div>
                             <div>
-                                <a class="firmware-ready__name" id="presetName" href="#" target="_blank" rel="noopener noreferrer" style="text-decoration: none; color: inherit;">Loading...</a>
+                                <a class="firmware-ready__name" id="presetName" href="#" target="_blank" rel="noopener noreferrer" style="text-decoration: none; color: inherit;">Loading... <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: -1px; opacity: 0.5;"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a>
                                 <div class="firmware-ready__size" id="presetSize">Bundled &middot; Ready to flash</div>
                             </div>
                         </div>
@@ -1687,6 +1687,8 @@
     };
 
     // ── Firmware Download from GitHub Releases ────────
+    var extLinkIcon = ' <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: -1px; opacity: 0.5;"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>';
+
     function fetchFirmwareFromRelease(dev) {
         var nameEl = document.getElementById('presetName');
         nameEl.textContent = 'Loading...';
@@ -1703,7 +1705,7 @@
                 return resp.json();
             })
             .then(function(info) {
-                nameEl.textContent = 'Ratspeak ' + info.version;
+                nameEl.innerHTML = 'Ratspeak ' + info.version + extLinkIcon;
                 if (repoPath) {
                     nameEl.href = 'https://github.com/' + repoPath + '/releases/tag/' + info.version;
                 }
@@ -1721,7 +1723,7 @@
                 updateFlashBtn();
             })
             .catch(function(err) {
-                nameEl.textContent = dev.firmware;
+                nameEl.innerHTML = dev.firmware;
                 nameEl.href = '#';
                 document.getElementById('presetSize').textContent = 'Download failed: ' + err.message;
                 state.firmwareReady = false;
