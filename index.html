@@ -141,6 +141,78 @@
             border-bottom-color: var(--text-secondary);
         }
 
+        /* ── Hamburger Menu ───────────────────────────────── */
+
+        .navbar-hamburger {
+            display: none;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 6px;
+            color: var(--text-secondary);
+            transition: color 0.2s;
+        }
+
+        .navbar-hamburger:hover {
+            color: var(--text-primary);
+        }
+
+        .navbar-mobile-menu {
+            display: none;
+            position: fixed;
+            top: 56px;
+            left: 0;
+            right: 0;
+            background: linear-gradient(180deg, rgba(28, 35, 51, 0.98) 0%, rgba(36, 45, 63, 0.98) 100%);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            padding: 12px 20px 16px;
+            flex-direction: column;
+            gap: 4px;
+            z-index: 99;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+            opacity: 0;
+            transform: translateY(-8px);
+            transition: opacity 0.25s ease, transform 0.25s ease;
+            pointer-events: none;
+        }
+
+        .navbar-mobile-menu.open {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+        }
+
+        .navbar-mobile-menu a {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 14px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            border-radius: 8px;
+            transition: background 0.15s, color 0.15s;
+        }
+
+        .navbar-mobile-menu a:hover {
+            background: rgba(255, 255, 255, 0.04);
+            color: var(--text-primary);
+        }
+
+        .navbar-mobile-menu .mobile-divider {
+            height: 1px;
+            background: var(--border);
+            margin: 4px 0;
+        }
+
+        @media (max-width: 640px) {
+            .navbar-right { display: none; }
+            .navbar-hamburger { display: block; }
+            .navbar-mobile-menu { display: flex; }
+        }
+
         .nr-btn {
             background: rgba(0, 160, 128, 0.1);
             color: var(--green);
@@ -921,15 +993,28 @@
         </a>
     </div>
     <div class="navbar-right">
+        <a href="download.html" class="navbar-link">Download</a>
         <a href="about.html" class="navbar-link">About</a>
         <a href="docs.html" class="navbar-link">Docs</a>
-        <a href="download.html" class="navbar-link">Download</a>
-        <a href="#" class="nr-btn" target="_blank" rel="noopener noreferrer">
+        <a href="https://github.com/ratspeak" class="nr-btn" target="_blank" rel="noopener noreferrer">
             GitHub
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17l10-10"/><path d="M7 7h10v10"/></svg>
         </a>
     </div>
+    <button class="navbar-hamburger" id="navHamburger" aria-label="Menu">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/></svg>
+    </button>
 </nav>
+<div class="navbar-mobile-menu" id="navMobileMenu">
+    <a href="download.html">Download</a>
+    <a href="about.html">About</a>
+    <a href="docs.html">Docs</a>
+    <div class="mobile-divider"></div>
+    <a href="https://github.com/ratspeak" target="_blank" rel="noopener noreferrer">
+        GitHub
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17l10-10"/><path d="M7 7h10v10"/></svg>
+    </a>
+</div>
 
 <!-- ── Hero ────────────────────────────────────────────── -->
 <section class="hero">
@@ -1944,6 +2029,26 @@
             toastTimer = null;
         }, 2500);
     };
+})();
+</script>
+
+<script>
+(function() {
+    var btn = document.getElementById('navHamburger');
+    var menu = document.getElementById('navMobileMenu');
+    if (!btn || !menu) return;
+    btn.addEventListener('click', function() {
+        var open = menu.classList.toggle('open');
+        btn.innerHTML = open
+            ? '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="6" y1="18" x2="18" y2="6"/></svg>'
+            : '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/></svg>';
+    });
+    menu.addEventListener('click', function(e) {
+        if (e.target.closest('a')) {
+            menu.classList.remove('open');
+            btn.innerHTML = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/></svg>';
+        }
+    });
 })();
 </script>
 
