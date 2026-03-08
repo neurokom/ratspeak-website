@@ -1,24 +1,25 @@
-# Games & Apps
+# Apps & RLAP
 
-Interactive applications built on RLAP — play chess, challenge contacts, and track sessions alongside your messages.
+Ratspeak supports interactive applications over the mesh through RLAP — a lightweight protocol that encodes app actions inside standard LXMF messages.
 
 ## Overview
 
-The Games tab hosts interactive applications that run over the Reticulum mesh using LXMF messages. Each app session (a chess game, for example) is a series of structured messages exchanged between two contacts. Under the hood, these messages use **RLAP (Reticulum LXMF App Protocol)** — a lightweight protocol that encodes app actions into LXMF custom fields.
+The Apps tab is an experimental feature that demonstrates interactive communication over Reticulum. Under the hood, apps use **RLAP (Reticulum LXMF App Protocol)** — structured data embedded in LXMF custom fields, designed to fit within LoRa's tight bandwidth constraints.
 
-Non-Ratspeak clients (Sideband, NomadNet, MeshChat) see human-readable fallback text for every action, so RLAP sessions don't break compatibility.
+Currently, chess is included as a proof-of-concept to validate the protocol. RLAP is extensible — the plugin architecture supports adding new app types.
 
-<div class="screenshot-placeholder" data-caption="Games tab showing session list on the left and an active chess game with board and move history on the right">
+Non-Ratspeak clients (Sideband, NomadNet) see human-readable fallback text for every action, so RLAP sessions don't break compatibility.
+
+<div class="screenshot-placeholder" data-caption="Apps tab showing session list and an active RLAP session">
     <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#7e8fa2" stroke-width="1.5" stroke-linecap="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
-    <div>Games tab with chess session — screenshot placeholder</div>
+    <div>Apps tab — screenshot placeholder</div>
 </div>
 
-## Available Apps
+## Current Apps
 
 | App | Status | Type | Description |
 |-----|--------|------|-------------|
-| **Chess** | Active | Turn-based | Standard chess with full rule enforcement |
-| **Tic-Tac-Toe** | In progress | Turn-based | Classic 3x3 grid game |
+| **Chess** | Proof of concept | Turn-based | Validates RLAP protocol over mesh |
 
 More apps can be added through the RLAP plugin architecture. See [RLAP Protocol](../developer/rlap-protocol) for the technical specification.
 

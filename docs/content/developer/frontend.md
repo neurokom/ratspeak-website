@@ -114,7 +114,7 @@ The messaging interface:
 - **Contact list** with trust levels and last-seen status
 - **Message deduplication** — Prevents duplicate display from multiple Socket.IO events
 
-### games.js — Games & Apps
+### games.js — Apps & RLAP
 
 Interactive application UI:
 

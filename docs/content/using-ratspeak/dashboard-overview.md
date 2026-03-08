@@ -35,15 +35,15 @@ Network monitoring and interface management — connections table with sorting a
 ### Graph
 Interactive force-directed network graph showing your hub, contacts, transport nodes, and discovered peers. Color-coded nodes, zoom/pan/drag, search and filter. See [Graph Visualization](../using-ratspeak/graph-visualization) for full details.
 
-### Games
-Interactive applications over the mesh — challenge contacts to chess, track game sessions, and view move history. Built on the RLAP protocol. See [Games & Apps](../using-ratspeak/games-and-apps) for details.
+### Apps
+Experimental interactive applications over the mesh, built on the RLAP protocol. Chess is included as a proof-of-concept. See [Apps & RLAP](../using-ratspeak/games-and-apps) for details.
 
 ### Settings
 Configuration panel — ratspeak.conf settings, propagation node controls, path table management, and system information.
 
 ## Real-Time Updates
 
-The dashboard uses Socket.IO for real-time communication. All data updates — new messages, interface status changes, announce arrivals, alert notifications, game moves — are pushed instantly to your browser without polling or page refreshes.
+The dashboard uses Socket.IO for real-time communication. All data updates — new messages, interface status changes, announce arrivals, alert notifications, app actions — are pushed instantly to your browser without polling or page refreshes.
 
 The stats polling loop runs every **1.5 seconds** (configurable), keeping interface throughput, path tables, and connection status continuously updated.
 
@@ -60,6 +60,6 @@ Alerts appear in the header and can be dismissed individually. Duplicate alerts 
 
 - [Messaging](../using-ratspeak/messaging) — send and receive encrypted messages
 - [Graph Visualization](../using-ratspeak/graph-visualization) — interactive network graph
-- [Games & Apps](../using-ratspeak/games-and-apps) — play games over the mesh
+- [Apps & RLAP](../using-ratspeak/games-and-apps) — interactive apps over the mesh
 - [Network Monitoring](../using-ratspeak/network-monitoring) — monitor your mesh
 - [Configuration](../using-ratspeak/configuration) — customize Ratspeak settings

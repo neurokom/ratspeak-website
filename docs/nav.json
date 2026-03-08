@@ -34,7 +34,7 @@
         { "title": "Identity Management", "slug": "identity-management" },
         { "title": "Network Monitoring", "slug": "network-monitoring" },
         { "title": "Network Graph", "slug": "graph-visualization" },
-        { "title": "Games & Apps", "slug": "games-and-apps" },
+        { "title": "Apps & RLAP", "slug": "games-and-apps" },
         { "title": "Propagation Nodes", "slug": "propagation-node" },
         { "title": "Configuration", "slug": "configuration" }
       ]

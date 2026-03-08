@@ -228,6 +228,6 @@ Messages with `fields[0xFB] = "ratspeak.game"` are legacy v0 (pre-RLAP). The app
 
 ## What's Next
 
-- [Games & Apps](../using-ratspeak/games-and-apps) — using RLAP apps in Ratspeak
+- [Apps & RLAP](../using-ratspeak/games-and-apps) — using RLAP apps in Ratspeak
 - [LXMF Protocol](../understanding/lxmf-protocol) — the messaging layer RLAP builds on
 - [Wire Format](../understanding/wire-format) — Reticulum's packet structure

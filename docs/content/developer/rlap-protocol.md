@@ -273,7 +273,7 @@ Legacy translation is **receive-only** — all outbound messages use RLAP v1.
 
 ## What's Next
 
-- [Games & Apps](../using-ratspeak/games-and-apps) — using games in Ratspeak
+- [Apps & RLAP](../using-ratspeak/games-and-apps) — using RLAP apps in Ratspeak
 - [LXMF Protocol](../understanding/lxmf-protocol) — the messaging layer RLAP rides on
 - [REST API Reference](../developer/rest-api) — game-related API endpoints
 - [Socket.IO Events](../developer/socketio-events) — game-related real-time events

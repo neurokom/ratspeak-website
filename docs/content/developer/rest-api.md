@@ -453,7 +453,7 @@ Get hub's configured interfaces.
 
 ---
 
-## Games & Apps
+## Apps & RLAP
 
 ### GET /api/available-games
 

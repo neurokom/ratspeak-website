@@ -182,19 +182,19 @@ Both run custom firmware that connects to the Reticulum mesh via built-in LoRa r
 
 ---
 
-## Games & Apps
+## Apps & RLAP
 
-### How do games work over LoRa?
+### What is RLAP?
 
-Games use the RLAP protocol, which embeds game actions inside tiny LXMF messages. A chess move is about 60 bytes — well within a single LoRa packet. Games are asynchronous by design: you can take minutes, hours, or days between moves.
+RLAP (Reticulum LXMF App Protocol) embeds interactive app actions inside tiny LXMF messages. An action is about 60 bytes — well within a single LoRa packet. Sessions are asynchronous by design.
 
-### What games are available?
+### What apps are available?
 
-Currently: **Chess**. More games are planned. The RLAP protocol is extensible — new apps can be added as plugins.
+Chess is included as a proof-of-concept to validate the RLAP protocol. The architecture is extensible — new app types can be added as plugins.
 
-### Can I play games with Sideband users?
+### Can non-Ratspeak clients participate in RLAP sessions?
 
-Not interactively. Sideband and other LXMF clients will see human-readable fallback text like "[Ratspeak Chess] Move 5: Nf3" but cannot interact with the game. Full game participation requires Ratspeak.
+Not interactively. Sideband and other LXMF clients see human-readable fallback text like "[Ratspeak Chess] Move 5: Nf3" but cannot interact with sessions. Full RLAP participation requires Ratspeak.
 
 ---
 

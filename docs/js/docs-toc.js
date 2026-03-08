@@ -22,8 +22,11 @@
         for (var i = 0; i < headings.length; i++) {
             var h = headings[i];
             var level = h.tagName === 'H3' ? 'toc-link--h3' : '';
+            var text = h.cloneNode(true);
+            var badges = text.querySelectorAll('.glossary-category');
+            for (var j = 0; j < badges.length; j++) badges[j].remove();
             html += '<a class="toc-link ' + level + '" href="#' + h.id + '" data-toc-id="' + h.id + '">' +
-                h.textContent.replace(/#$/, '').trim() + '</a>';
+                text.textContent.replace(/#$/, '').trim() + '</a>';
         }
         tocNav.innerHTML = html;
 
