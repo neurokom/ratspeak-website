@@ -5,8 +5,8 @@ export default async function handler(req) {
   const device = searchParams.get('device');
 
   const repos = {
-    ratdeck: { repo: 'defidude/Ratdeck', file: 'ratdeck-firmware.zip' },
-    ratcom:  { repo: 'defidude/RatCom',  file: 'ratcom-firmware.zip' }
+    ratdeck: { repo: 'ratspeak/ratdeck', file: 'ratdeck-firmware.zip' },
+    ratcom:  { repo: 'ratspeak/ratcom',  file: 'ratcom-firmware.zip' }
   };
 
   const cfg = repos[device];

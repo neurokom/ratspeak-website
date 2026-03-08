@@ -15,7 +15,7 @@ Ratspeak runs on Linux, macOS, and Windows (via WSL or Git Bash). See [Platform 
 
 ```bash
 # Clone the repository
-git clone https://github.com/defidude/ratspeak.git
+git clone https://github.com/ratspeak/ratspeak.git
 cd ratspeak
 
 # Create a virtual environment
