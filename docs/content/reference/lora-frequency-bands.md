@@ -26,10 +26,10 @@ Ratspeak includes built-in frequency presets for common regions:
 | Parameter | Long Range | Balanced | Fast |
 |-----------|-----------|----------|------|
 | Frequency | 915 MHz | 915 MHz | 915 MHz |
-| Bandwidth | 125 kHz | 125 kHz | 250 kHz |
+| Bandwidth | 62.5 kHz | 125 kHz | 250 kHz |
 | Spreading Factor | 12 | 9 | 7 |
 | Coding Rate | 4/8 | 4/5 | 4/5 |
-| TX Power | 17 dBm | 17 dBm | 17 dBm |
+| TX Power | 22 dBm | 17 dBm | 14 dBm |
 | Data Rate | ~293 bps | ~3,515 bps | ~21,875 bps |
 | Range (est.) | 15-50 km | 5-20 km | 2-10 km |
 
@@ -38,7 +38,7 @@ Ratspeak includes built-in frequency presets for common regions:
 | Parameter | Long Range | Balanced | Fast |
 |-----------|-----------|----------|------|
 | Frequency | 867.2 MHz | 867.2 MHz | 867.2 MHz |
-| Bandwidth | 125 kHz | 125 kHz | 250 kHz |
+| Bandwidth | 62.5 kHz | 125 kHz | 250 kHz |
 | Spreading Factor | 12 | 9 | 7 |
 | Coding Rate | 4/8 | 4/5 | 4/5 |
 | TX Power | 14 dBm | 14 dBm | 14 dBm |
@@ -55,7 +55,7 @@ Same as US 915 MHz presets. Australia allows up to 30 dBm (1 W) EIRP.
 | Parameter | Long Range | Balanced | Fast |
 |-----------|-----------|----------|------|
 | Frequency | 923 MHz | 923 MHz | 923 MHz |
-| Bandwidth | 125 kHz | 125 kHz | 250 kHz |
+| Bandwidth | 62.5 kHz | 125 kHz | 250 kHz |
 | Spreading Factor | 12 | 9 | 7 |
 | Coding Rate | 4/8 | 4/5 | 4/5 |
 | TX Power | 13 dBm | 13 dBm | 13 dBm |

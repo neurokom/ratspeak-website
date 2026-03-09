@@ -74,8 +74,8 @@ TX power is set in dBm (decibels relative to 1 milliwatt):
 | 2 | 1.6 mW | Very short range, battery saving |
 | 7 | 5 mW | Short range, low power |
 | 10 | 10 mW | Moderate range |
-| 14 | 25 mW | Good balance (Balanced preset) |
-| 17 | 50 mW | Long range (Long Range preset) |
+| 14 | 25 mW | Fast preset |
+| 17 | 50 mW | Balanced preset |
 | 20 | 100 mW | Near maximum |
 | 22 | 160 mW | Maximum for most boards |
 

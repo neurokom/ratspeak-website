@@ -406,7 +406,7 @@ Get RNode LoRa presets and frequency regions.
 ```json
 {
   "presets": {
-    "long_range": { "bandwidth": 125000, "sf": 12, "cr": 8 },
+    "long_range": { "bandwidth": 62500, "sf": 12, "cr": 8 },
     "balanced": { "bandwidth": 125000, "sf": 9, "cr": 5 },
     "fast": { "bandwidth": 250000, "sf": 7, "cr": 5 }
   },
