@@ -143,7 +143,7 @@ CREATE INDEX idx_messages_identity ON messages(identity_id);
 | `reply_to_preview` | TEXT | Preview text of original message |
 | `game_id` | TEXT | RLAP session UUID (if game message) |
 | `game_action` | TEXT | RLAP action type |
-| `game_move_san` | TEXT | Chess SAN notation (if chess move) |
+| `game_move_san` | TEXT | Human-readable move notation (if applicable) |
 
 ### messages_fts
 

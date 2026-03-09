@@ -172,7 +172,7 @@ Send a game/app action via RLAP protocol.
 {
   "dest_hash": "4faf1b2e...",
   "game_id": "session-uuid",
-  "game": "chess",
+  "game": "ttt",
   "action": "move",
   "move": "e2e4",
   "index": 5

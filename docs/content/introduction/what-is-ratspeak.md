@@ -9,7 +9,7 @@ Ratspeak is your window into encrypted mesh communication — send messages, man
     <div>Ratspeak dashboard — screenshot coming soon</div>
 </div>
 
-Ratspeak is a dashboard and desktop app for Reticulum mesh networks. It gives you a graphical interface for messaging, network visualization, identity management, connection monitoring, and interactive apps like chess.
+Ratspeak is a dashboard and desktop app for Reticulum mesh networks. It gives you a graphical interface for messaging, network visualization, identity management, connection monitoring, and interactive apps over RLAP.
 
 No accounts to create on someone else's server. No data stored in someone else's cloud. Your identity is a cryptographic key that lives on your device.
 
@@ -35,7 +35,7 @@ Both use the same web frontend and are fully interoperable on the Reticulum netw
 - **Monitor connections** — live table of every destination your node knows about, with reachability status, hop counts, and path ages.
 - **Connect radios and interfaces** — add LoRa radios, TCP links, WiFi discovery, and Bluetooth mesh through the UI.
 - **Run a propagation node** — store messages for offline contacts and deliver them when they reconnect.
-- **Play chess over the mesh** — interactive games via the RLAP protocol, with human-readable fallback for non-Ratspeak clients.
+- **Play games over the mesh** — interactive apps like Tic-Tac-Toe via the RLAP protocol, with human-readable fallback for non-Ratspeak clients.
 
 ## Hardware Companions
 

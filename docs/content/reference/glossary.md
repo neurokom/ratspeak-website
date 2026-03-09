@@ -79,7 +79,7 @@ An LXMF node that stores messages for offline recipients and delivers them when 
 A key rotation mechanism providing forward secrecy for Single destinations. Keys rotate periodically (default every 30 minutes) with a 512-key retention window, ensuring old messages remain decryptable while future keys stay protected. See [Security Model](../understanding/security-model).
 
 ### RLAP
-Reticulum LXMF App Protocol. A lightweight protocol for interactive applications (like chess) over LXMF messaging. Encodes app actions in LXMF custom fields using single-character keys and MessagePack serialization, designed to fit within LoRa's tight bandwidth constraints. See [RLAP Protocol](../developer/rlap-protocol).
+Reticulum LXMF App Protocol. A lightweight protocol for interactive applications (like Tic-Tac-Toe) over LXMF messaging. Encodes app actions in LXMF custom fields using single-character keys and MessagePack serialization, designed to fit within LoRa's tight bandwidth constraints. See [RLAP Protocol](../developer/rlap-protocol).
 
 ### RNode
 An open-source LoRa radio interface for Reticulum. Runs on ESP32 and nRF52 boards, connecting via USB, BLE, or TCP. Provides long-range off-grid communication (1-50+ km depending on conditions). See [RNode Overview](../hardware/rnode-overview).

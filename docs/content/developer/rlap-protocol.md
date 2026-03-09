@@ -26,7 +26,7 @@ The LXMF `content` field always contains human-readable fallback text.
 ```python
 fields[0xFB] = "rlap.v1"
 fields[0xFD] = {
-    "a": "chess.1",              # app_id.version
+    "a": "ttt.1",                # app_id.version
     "c": "move",                 # command
     "s": "a1b2c3d4e5f6g7h8",    # session_id
     "p": { "u": "e2e4", ... }   # payload (app-specific)
@@ -119,13 +119,13 @@ RLAP supports three validation approaches:
 | **receiver** | Receiver validates on receipt | Sends `error` action on invalid |
 | **both** | Both sides validate independently | Receiver sends `error` if disagreement |
 
-Chess uses **sender validation** — the client-side chess.js library enforces legal moves before sending.
+Tic-Tac-Toe uses **sender validation** — the client enforces legal moves (empty cells only) before sending.
 
 ## Session Types
 
 | Type | Description | Example |
 |------|-------------|---------|
-| `turn_based` | Players alternate | Chess, Tic-Tac-Toe |
+| `turn_based` | Players alternate | Tic-Tac-Toe |
 | `real_time` | Both can act anytime | Collaborative editing |
 | `one_shot` | Single action, no ongoing state | File sharing |
 
@@ -135,7 +135,7 @@ When a receiver cannot process an action, it sends an `error` command:
 
 ```python
 fields[0xFD] = {
-    "a": "chess.1",
+    "a": "ttt.1",
     "c": "error",
     "s": "session_id",
     "p": {
@@ -159,37 +159,34 @@ Every RLAP message sets the LXMF `content` field to human-readable text:
 **Format:** `[Ratspeak <AppName>] <description>`
 
 **Examples:**
-- `[Ratspeak Chess] Sent a challenge!`
-- `[Ratspeak Chess] Move 5: Nf3`
-- `[Ratspeak Chess] Checkmate! White wins.`
-- `[Ratspeak Chess] Resigned. Black wins.`
+- `[Ratspeak Tic-Tac-Toe] Sent a challenge!`
+- `[Ratspeak Tic-Tac-Toe] X plays center`
+- `[Ratspeak Tic-Tac-Toe] X wins!`
+- `[Ratspeak Tic-Tac-Toe] Resigned. O wins.`
 
 Non-RLAP clients (Sideband, NomadNet) display this as a regular message — no special handling required.
 
-## Chess Payload Schema
+## Tic-Tac-Toe Payload Schema
 
-The built-in Chess app uses these payload keys:
+The built-in Tic-Tac-Toe app uses these payload keys:
 
 | Key | Name | Type | Used In |
 |-----|------|------|---------|
-| `f` | FEN | string | accept, move (terminal) |
-| `u` | UCI move | string | move |
-| `m` | SAN move | string | move (display) |
-| `n` | Move number | int | move |
+| `i` | Cell index | int | move (0-8, left-to-right top-to-bottom) |
+| `b` | Board state | string | accept, move (9 chars: `" "`, `"X"`, `"O"`) |
 | `t` | Turn (hash) | string | accept, move |
-| `x` | Terminal status | string | move (`""`, `"checkmate"`, `"stalemate"`, `"draw"`) |
-| `w` | Winner (hash) | string | move (if checkmate) |
+| `x` | Terminal status | string | move (`""`, `"win"`, `"draw"`) |
+| `w` | Winner (hash) | string | move (if win) |
 
-**Example chess move:**
+**Example Tic-Tac-Toe move:**
 ```python
 fields[0xFD] = {
-    "a": "chess.1",
+    "a": "ttt.1",
     "c": "move",
     "s": "a1b2c3d4e5f6g7h8",
     "p": {
-        "u": "e2e4",
-        "m": "e4",
-        "n": 1,
+        "i": 4,
+        "b": "    X    ",
         "t": "4faf1b2e...",
         "x": "",
         "w": ""
@@ -265,9 +262,8 @@ Messages with `fields[0xFB] = "ratspeak.game"` are pre-RLAP (legacy v0). The App
 | `action` | `"c"` (command) |
 | `game_id` | `"s"` (session_id) |
 | `game` | `"a"` (app_id prefix) |
-| `state` | `"p"."f"` (FEN) |
-| `move` | `"p"."u"` (UCI) |
-| `move_san` | `"p"."m"` (SAN) |
+| `state` | `"p"."b"` (board) |
+| `move` | `"p"."i"` (cell index) |
 
 Legacy translation is **receive-only** — all outbound messages use RLAP v1.
 

@@ -463,10 +463,10 @@ List registered RLAP apps.
 ```json
 [
   {
-    "app_id": "chess",
+    "app_id": "ttt",
     "version": 1,
-    "display_name": "Chess",
-    "icon": "chess-icon"
+    "display_name": "Tic-Tac-Toe",
+    "icon": "ttt-icon"
   }
 ]
 ```

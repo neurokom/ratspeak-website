@@ -36,7 +36,7 @@ Network monitoring and interface management — connections table with sorting a
 Interactive force-directed network graph showing your hub, contacts, transport nodes, and discovered peers. Color-coded nodes, zoom/pan/drag, search and filter. See [Graph Visualization](../using-ratspeak/graph-visualization) for full details.
 
 ### Apps
-Experimental interactive applications over the mesh, built on the RLAP protocol. Chess is included as a proof-of-concept. See [Apps & RLAP](../using-ratspeak/games-and-apps) for details.
+Experimental interactive applications over the mesh, built on the RLAP protocol. Tic-Tac-Toe is included as a proof-of-concept. See [Apps & RLAP](../using-ratspeak/games-and-apps) for details.
 
 ### Settings
 Configuration panel — ratspeak.conf settings, propagation node controls, path table management, and system information.

@@ -111,7 +111,7 @@ Bridges the RLAP protocol to the dashboard. Handles:
 
 - Game challenges, moves, resignations, draw offers
 - Session lifecycle (pending, active, completed, expired)
-- Pluggable app registration (chess is built-in, more coming)
+- Pluggable app registration (Tic-Tac-Toe is built-in, more coming)
 - Bi-directional conversion between Socket.IO events and LXMF messages
 
 ### RNS Manager

@@ -6,7 +6,7 @@ Ratspeak supports interactive applications over the mesh through RLAP — a ligh
 
 The Apps tab is an experimental feature that demonstrates interactive communication over Reticulum. Under the hood, apps use **RLAP (Reticulum LXMF App Protocol)** — structured data embedded in LXMF custom fields, designed to fit within LoRa's tight bandwidth constraints.
 
-Currently, chess is included as a proof-of-concept to validate the protocol. RLAP is extensible — the plugin architecture supports adding new app types.
+Currently, Tic-Tac-Toe is included as a proof-of-concept to validate the protocol. RLAP is extensible — the plugin architecture supports adding new app types.
 
 Non-Ratspeak clients (Sideband, NomadNet) see human-readable fallback text for every action, so RLAP sessions don't break compatibility.
 
@@ -19,7 +19,7 @@ Non-Ratspeak clients (Sideband, NomadNet) see human-readable fallback text for e
 
 | App | Status | Type | Description |
 |-----|--------|------|-------------|
-| **Chess** | Proof of concept | Turn-based | Validates RLAP protocol over mesh |
+| **Tic-Tac-Toe** | Proof of concept | Turn-based | Validates RLAP protocol over mesh |
 
 More apps can be added through the RLAP plugin architecture. See [RLAP Protocol](../developer/rlap-protocol) for the technical specification.
 
@@ -120,15 +120,15 @@ Every game session follows a standard lifecycle:
 
 1. **Challenge** — one player sends a challenge to a contact
 2. **Accept / Decline** — the recipient accepts or declines
-3. **Action** — players take turns (moves in chess)
-4. **End** — the game reaches a terminal state (checkmate, stalemate, draw, resign)
+3. **Action** — players take turns (moves in Tic-Tac-Toe)
+4. **End** — the game reaches a terminal state (win, draw, resign)
 
-## Playing Chess
+## Playing Tic-Tac-Toe
 
 ### Starting a Game
 
 1. Navigate to the **Games** tab
-2. Click **New Game** and select **Chess**
+2. Click **New Game** and select **Tic-Tac-Toe**
 3. Choose a contact to challenge
 4. The challenge is sent as an LXMF message
 
@@ -139,23 +139,23 @@ Every game session follows a standard lifecycle:
 
 ### Making Moves
 
-- The challenger always plays **White** and moves first
-- Click a piece to select it, then click the destination square
-- Legal moves are enforced client-side by chess.js
-- Each move is sent as an LXMF message with the move in UCI and SAN notation
+- The challenger always plays **X** and moves first
+- Tap a cell on the 3x3 grid to place your mark
+- Legal moves are enforced client-side (only empty cells)
+- Each move is sent as an LXMF message with the cell position
 
 ### Game End
 
-Games end by **checkmate**, **stalemate**, **resignation**, or **draw agreement**. The final board state is preserved in the session history.
+Games end by **three in a row** (win), **full board** (draw), or **resignation**. The final board state is preserved in the session history.
 
 ## Fallback Text
 
 When a game action is sent, the LXMF message `content` field contains a human-readable description. Non-RLAP clients see these as regular messages:
 
-- `[Ratspeak Chess] Sent a challenge!`
-- `[Ratspeak Chess] Challenge accepted`
-- `[Ratspeak Chess] Move 5: Nf3`
-- `[Ratspeak Chess] Checkmate! White wins.`
+- `[Ratspeak Tic-Tac-Toe] Sent a challenge!`
+- `[Ratspeak Tic-Tac-Toe] Challenge accepted`
+- `[Ratspeak Tic-Tac-Toe] X plays center`
+- `[Ratspeak Tic-Tac-Toe] X wins!`
 
 This ensures game actions don't appear as blank or broken messages on other clients.
 

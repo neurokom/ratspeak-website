@@ -15,7 +15,7 @@ All LXMF clients can send messages to each other. They differ in interface, feat
 | **Emoji reactions** | Yes | No | No |
 | **Reply threading** | Yes | No | No |
 | **Full-text search** | Yes (FTS5) | No | No |
-| **Games (RLAP)** | Yes (Chess) | No | No |
+| **Games (RLAP)** | Yes (Tic-Tac-Toe) | No | No |
 | **Network graph** | Yes (D3.js) | No | No |
 | **Interface management** | Yes (GUI) | Limited | No (config file) |
 | **Multi-identity** | Yes (hot-swap) | Yes | No |
@@ -107,7 +107,7 @@ Both support LoRa mesh networking, but with different philosophies:
 
 ### Interactive Games (RLAP)
 
-Ratspeak is the only LXMF client that supports interactive applications over mesh. The RLAP protocol enables turn-based games (chess) that work asynchronously — even over LoRa with minutes between moves.
+Ratspeak is the only LXMF client that supports interactive applications over mesh. The RLAP protocol enables turn-based games (like Tic-Tac-Toe) that work asynchronously — even over LoRa with minutes between moves.
 
 ### Network Visualization
 

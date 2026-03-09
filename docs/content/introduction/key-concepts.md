@@ -77,7 +77,7 @@ A node that stores messages for destinations that are currently offline. When th
 
 ### RLAP (Reticulum LXMF App Protocol)
 
-A protocol for interactive applications over LXMF messages. RLAP encodes app sessions (like chess games) as structured data inside LXMF custom fields. Designed to fit within the 295-byte limit of single-packet delivery.
+A protocol for interactive applications over LXMF messages. RLAP encodes app sessions (like Tic-Tac-Toe games) as structured data inside LXMF custom fields. Designed to fit within the 295-byte limit of single-packet delivery.
 
 Non-Ratspeak clients see human-readable fallback text for any RLAP message, maintaining ecosystem compatibility.
 

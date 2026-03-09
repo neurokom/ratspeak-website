@@ -8,7 +8,7 @@ Frequently asked questions about Ratspeak and Reticulum.
 
 **Reticulum** is the mesh networking protocol — it handles encryption, routing, and transport across diverse physical media (LoRa, TCP, WiFi, serial, etc.).
 
-**Ratspeak** is a web dashboard that makes Reticulum accessible through a browser. It provides messaging, contact management, network monitoring, and games — all powered by Reticulum underneath.
+**Ratspeak** is a web dashboard that makes Reticulum accessible through a browser. It provides messaging, contact management, network monitoring, and interactive apps — all powered by Reticulum underneath.
 
 Think of it like email: Reticulum is the SMTP/IMAP protocol, and Ratspeak is the email client.
 
@@ -190,11 +190,11 @@ RLAP (Reticulum LXMF App Protocol) embeds interactive app actions inside tiny LX
 
 ### What apps are available?
 
-Chess is included as a proof-of-concept to validate the RLAP protocol. The architecture is extensible — new app types can be added as plugins.
+Tic-Tac-Toe is included as a proof-of-concept to validate the RLAP protocol. The architecture is extensible — new app types can be added as plugins.
 
 ### Can non-Ratspeak clients participate in RLAP sessions?
 
-Not interactively. Sideband and other LXMF clients see human-readable fallback text like "[Ratspeak Chess] Move 5: Nf3" but cannot interact with sessions. Full RLAP participation requires Ratspeak.
+Not interactively. Sideband and other LXMF clients see human-readable fallback text like "[Ratspeak Tic-Tac-Toe] X plays center" but cannot interact with sessions. Full RLAP participation requires Ratspeak.
 
 ---
 

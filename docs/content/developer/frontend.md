@@ -1,6 +1,6 @@
 # Frontend Architecture
 
-Ratspeak's browser-side code — a vanilla JavaScript application using Socket.IO for real-time updates, D3.js for network visualization, and chess.js for game logic.
+Ratspeak's browser-side code — a vanilla JavaScript application using Socket.IO for real-time updates, D3.js for network visualization, and RLAP for interactive apps.
 
 ## Technology Stack
 
@@ -8,7 +8,7 @@ Ratspeak's browser-side code — a vanilla JavaScript application using Socket.I
 |---------|---------|---------|
 | Socket.IO | 4.7.4 | Real-time WebSocket communication |
 | D3.js | 7 | Force-directed network graph |
-| chess.js | Latest | Chess move validation and legal move calculation |
+| — | — | Game logic handled by RLAP app engines |
 | jdenticon | 3.3.0 | Deterministic avatar generation from identity hashes |
 
 No framework (React, Vue, Angular). The frontend uses a **module pattern** with vanilla JavaScript and DOM manipulation.
@@ -22,7 +22,7 @@ dashboard/static/js/
 ├── nav.js                  # View switching, navigation UI
 ├── lxmf.js                 # Messaging UI, conversations, contacts
 ├── identity.js             # Identity management, profile
-├── games.js                # Game modal, chess board, challenges
+├── games.js                # Game modal, RLAP UI, challenges
 ├── game_engines.js         # Game engine implementations
 ├── games_tab.js            # Games tab view controller
 ├── graph.js                # D3.js network graph (canvas)
@@ -41,7 +41,7 @@ dashboard/static/js/
     ├── socket.io-4.7.4.min.js
     ├── d3.v7.min.js
     ├── jdenticon-3.3.0.min.js
-    └── chess.min.js
+    └── (no game-specific vendor libs)
 ```
 
 ## Architecture Pattern
@@ -118,12 +118,11 @@ The messaging interface:
 
 Interactive application UI:
 
-- **Chess board rendering** — Canvas-based board with piece sprites
-- **Move validation** — Uses chess.js for legal move calculation
+- **Game board rendering** — Canvas-based Tic-Tac-Toe grid
+- **Move validation** — Client-side legal move enforcement
 - **Challenge flow** — Challenge → Accept/Decline → Play → End
 - **Game bar** — Persistent indicator when a game is active
 - **Move history** — Reconstructed from conversation messages
-- **Draw negotiation** — Offer/accept/decline flow
 
 ### graph.js — Network Visualization
 
