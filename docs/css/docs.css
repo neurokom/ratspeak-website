@@ -104,22 +104,92 @@ body::after {
 .navbar-right {
     display: flex;
     align-items: center;
-    gap: 20px;
+    gap: 12px;
 }
 
-.navbar-link {
-    color: var(--text-secondary);
-    text-decoration: none;
-    font-size: 13px;
-    font-weight: 500;
+.navbar-sep {
+    width: 1px;
+    height: 20px;
+    background: var(--border);
+    opacity: 0.6;
+}
+
+.navbar-gh {
+    display: flex;
+    align-items: center;
+    color: var(--text-muted);
     transition: color 0.2s;
+    padding: 4px;
 }
 
-.navbar-link:hover {
+.navbar-gh:hover {
     color: var(--text-primary);
 }
 
-.navbar-link--active {
+.navbar-hamburger {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 6px;
+    color: var(--text-secondary);
+    transition: color 0.2s;
+    border-radius: 6px;
+}
+
+.navbar-hamburger:hover {
+    color: var(--text-primary);
+    background: rgba(255, 255, 255, 0.04);
+}
+
+.navbar-menu {
+    display: flex;
+    position: fixed;
+    top: 56px;
+    right: 16px;
+    min-width: 160px;
+    background: linear-gradient(180deg, rgba(28, 35, 51, 0.98) 0%, rgba(36, 45, 63, 0.98) 100%);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 8px;
+    flex-direction: column;
+    gap: 2px;
+    z-index: 99;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    opacity: 0;
+    transform: translateY(-8px);
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    pointer-events: none;
+}
+
+.navbar-menu.open {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+}
+
+.navbar-menu a {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    border-radius: 8px;
+    transition: background 0.15s, color 0.15s;
+}
+
+.navbar-menu a:hover {
+    background: rgba(255, 255, 255, 0.06);
+    color: var(--text-primary);
+}
+
+.navbar-menu a.menu-active {
     color: var(--green);
 }
 
@@ -128,8 +198,8 @@ body::after {
     color: var(--green);
     border: 1px solid rgba(0, 212, 170, 0.3);
     border-radius: 8px;
-    padding: 7px 14px;
-    font-size: 12px;
+    padding: 8px 18px;
+    font-size: 13px;
     font-weight: 600;
     cursor: pointer;
     font-family: var(--font-sans);
@@ -1076,10 +1146,6 @@ body::after {
 @media (max-width: 768px) {
     .navbar {
         padding: 0 16px;
-    }
-
-    .navbar-right {
-        display: none;
     }
 
     .sidebar-toggle {

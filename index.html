@@ -123,71 +123,80 @@
         .navbar-right {
             display: flex;
             align-items: center;
-            gap: 24px;
+            gap: 12px;
         }
 
-        .navbar-link {
-            color: var(--text-secondary);
-            text-decoration: none;
-            font-size: 14px;
-            font-weight: 500;
-            padding: 6px 2px;
-            border-bottom: 1px solid transparent;
-            transition: color 0.2s, border-color 0.2s;
+        .navbar-sep {
+            width: 1px;
+            height: 20px;
+            background: var(--border);
+            opacity: 0.6;
         }
 
-        .navbar-link:hover {
+        .navbar-gh {
+            display: flex;
+            align-items: center;
+            color: var(--text-muted);
+            transition: color 0.2s;
+            padding: 4px;
+        }
+
+        .navbar-gh:hover {
             color: var(--text-primary);
-            border-bottom-color: var(--text-secondary);
         }
 
         /* ── Hamburger Menu ───────────────────────────────── */
 
         .navbar-hamburger {
-            display: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             background: none;
             border: none;
             cursor: pointer;
             padding: 6px;
             color: var(--text-secondary);
             transition: color 0.2s;
+            border-radius: 6px;
         }
 
         .navbar-hamburger:hover {
             color: var(--text-primary);
+            background: rgba(255, 255, 255, 0.04);
         }
 
-        .navbar-mobile-menu {
-            display: none;
+        .navbar-menu {
+            display: flex;
             position: fixed;
             top: 56px;
-            left: 0;
-            right: 0;
+            right: 16px;
+            min-width: 160px;
             background: linear-gradient(180deg, rgba(28, 35, 51, 0.98) 0%, rgba(36, 45, 63, 0.98) 100%);
             backdrop-filter: blur(20px);
-            border-bottom: 1px solid var(--border);
-            padding: 12px 20px 16px;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 8px;
             flex-direction: column;
-            gap: 4px;
+            gap: 2px;
             z-index: 99;
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
             opacity: 0;
             transform: translateY(-8px);
-            transition: opacity 0.25s ease, transform 0.25s ease;
+            transition: opacity 0.2s ease, transform 0.2s ease;
             pointer-events: none;
         }
 
-        .navbar-mobile-menu.open {
+        .navbar-menu.open {
             opacity: 1;
             transform: translateY(0);
             pointer-events: auto;
         }
 
-        .navbar-mobile-menu a {
+        .navbar-menu a {
             display: flex;
             align-items: center;
             gap: 8px;
-            padding: 12px 14px;
+            padding: 10px 14px;
             color: var(--text-secondary);
             text-decoration: none;
             font-size: 14px;
@@ -196,21 +205,9 @@
             transition: background 0.15s, color 0.15s;
         }
 
-        .navbar-mobile-menu a:hover {
-            background: rgba(255, 255, 255, 0.04);
+        .navbar-menu a:hover {
+            background: rgba(255, 255, 255, 0.06);
             color: var(--text-primary);
-        }
-
-        .navbar-mobile-menu .mobile-divider {
-            height: 1px;
-            background: var(--border);
-            margin: 4px 0;
-        }
-
-        @media (max-width: 640px) {
-            .navbar-right { display: none; }
-            .navbar-hamburger { display: block; }
-            .navbar-mobile-menu { display: flex; }
         }
 
         .nr-btn {
@@ -608,176 +605,248 @@
             50% { opacity: var(--glow-peak, 0.3); }
         }
 
-        /* ── HOW IT WORKS Section ──────────────────────── */
+        /* ── GET STARTED Section ──────────────────────────── */
 
-        .how {
-            padding: 100px 32px 120px;
+        .gs {
+            padding: 100px 32px 80px;
             background: linear-gradient(180deg, var(--bg-primary) 0%, var(--bg-secondary) 50%, var(--bg-primary) 100%);
         }
 
-        .how .section-heading {
-            max-width: 1000px;
+        .gs .section-heading {
+            max-width: 880px;
             margin-left: auto;
             margin-right: auto;
         }
 
-        .how-flow {
+        .gs-timeline {
             position: relative;
-            max-width: 680px;
+            max-width: 760px;
             margin: 0 auto;
         }
 
-        /* SVG connector path — dynamically computed by JS */
-        .how-flow__connector {
+        /* Vertical connector line */
+        .gs-timeline::before {
+            content: '';
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 0;
-            pointer-events: none;
+            left: 35px;
+            top: 56px;
+            bottom: 56px;
+            width: 2px;
+            background: var(--border);
+            border-radius: 1px;
             opacity: 0;
-            transition: opacity 1s ease;
+            transition: opacity 1s ease 0.3s;
         }
 
-        .how-flow__connector.revealed {
-            opacity: 1;
+        .gs-timeline.revealed::before {
+            opacity: 0.35;
         }
 
-        /* Cards container — vertical stack */
-        .how-cards {
+        .gs-step {
+            display: grid;
+            grid-template-columns: 72px 1fr;
+            gap: 24px;
+            padding-bottom: 12px;
+        }
+
+        .gs-step:last-child { padding-bottom: 0; }
+
+        /* ── Marker column ── */
+        .gs-step__marker {
             display: flex;
             flex-direction: column;
-            gap: 48px;
-            position: relative;
-            z-index: 1;
+            align-items: center;
+            padding-top: 24px;
         }
 
-        /* Uniform card sizing */
-        .how-card {
-            width: 420px;
-            min-height: 108px;
+        .gs-step__icon {
+            width: 64px;
+            height: 64px;
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            z-index: 1;
+            border: 1px solid;
+            transform: scale(0);
+            transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) calc(var(--step-index, 0) * 0.15s + 0.1s),
+                        box-shadow 0.3s ease;
+        }
+
+        .gs-step.visible .gs-step__icon { transform: scale(1); }
+
+        .gs-step__icon svg {
+            width: 28px;
+            height: 28px;
+        }
+
+        .gs-step__number {
+            font-family: var(--font-mono);
+            font-size: 11px;
+            font-weight: 600;
+            margin-top: 8px;
+            letter-spacing: 1px;
+            opacity: 0.5;
+        }
+
+        /* ── Card column ── */
+        .gs-step__card {
             background: var(--glass-bg);
             border: 1px solid var(--glass-border);
             border-radius: 14px;
-            padding: 20px 24px;
-            position: relative;
+            padding: 24px 28px;
             backdrop-filter: blur(8px);
-            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+            position: relative;
+            overflow: hidden;
         }
 
-        /* Alternating left/right zigzag */
-        .how-card:nth-child(odd) {
-            align-self: flex-start;
-        }
-
-        .how-card:nth-child(even) {
-            align-self: flex-end;
-        }
-
-        .how-card:hover {
-            border-color: rgba(0, 212, 170, 0.25);
-            box-shadow: 0 4px 24px rgba(0, 212, 170, 0.06),
-                        0 0 0 1px rgba(0, 212, 170, 0.08);
-        }
-
-        /* Subtle top-edge glow line */
-        .how-card::before {
+        .gs-step__card::before {
             content: '';
             position: absolute;
             top: 0;
             left: 20px;
             right: 20px;
             height: 1px;
-            background: linear-gradient(90deg, transparent, rgba(0, 212, 170, 0.3), transparent);
             border-radius: 1px;
         }
 
-        /* Step number badge */
-        .how-card__badge {
-            position: absolute;
-            top: -14px;
-            left: 20px;
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
-            background: var(--bg-primary);
-            border: 2px solid var(--green);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-family: var(--font-mono);
-            font-weight: 700;
-            font-size: 13px;
-            color: var(--green);
-            box-shadow: 0 0 12px rgba(0, 212, 170, 0.15);
-            transform: scale(0);
-            transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.1s;
-        }
+        .gs-step__card:hover { transform: translateY(-2px); }
 
-        .how-card.visible .how-card__badge {
-            transform: scale(1);
-        }
-
-        /* Card title */
-        .how-card__title {
+        .gs-step__title {
             font-family: var(--font-sans);
             font-weight: 700;
-            font-size: 18px;
+            font-size: 20px;
             color: var(--text-primary);
-            margin-bottom: 6px;
-            margin-top: 4px;
+            line-height: 1.2;
+            margin-bottom: 8px;
+            letter-spacing: -0.3px;
         }
 
-        /* Card description */
-        .how-card__desc {
-            font-size: 14px;
+        .gs-step__desc {
+            font-size: 15px;
             color: var(--text-secondary);
-            line-height: 1.6;
+            line-height: 1.65;
         }
 
-        /* Fade-in with stagger via --step-index */
-        .how-card.fade-in {
-            opacity: 0;
-            transform: translateY(24px);
-            transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
-                        transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-            transition-delay: calc(var(--step-index, 0) * 0.1s);
+        /* ── Per-step accent theming ── */
+
+        [data-accent="green"] .gs-step__icon {
+            background: rgba(0, 212, 170, 0.06);
+            border-color: rgba(0, 212, 170, 0.25);
+            box-shadow: 0 0 20px rgba(0, 212, 170, 0.06);
+            color: var(--green);
+        }
+        [data-accent="green"] .gs-step__number { color: var(--green); }
+        [data-accent="green"] .gs-step__card::before { background: linear-gradient(90deg, transparent, rgba(0, 212, 170, 0.25), transparent); }
+        [data-accent="green"] .gs-step__card:hover { border-color: rgba(0, 212, 170, 0.2); box-shadow: 0 4px 24px rgba(0, 212, 170, 0.06); }
+        [data-accent="green"]:hover .gs-step__icon { box-shadow: 0 0 32px rgba(0, 212, 170, 0.2); }
+
+        [data-accent="purple"] .gs-step__icon {
+            background: rgba(192, 132, 252, 0.06);
+            border-color: rgba(192, 132, 252, 0.25);
+            box-shadow: 0 0 20px rgba(192, 132, 252, 0.06);
+            color: var(--purple);
+        }
+        [data-accent="purple"] .gs-step__number { color: var(--purple); }
+        [data-accent="purple"] .gs-step__card::before { background: linear-gradient(90deg, transparent, rgba(192, 132, 252, 0.25), transparent); }
+        [data-accent="purple"] .gs-step__card:hover { border-color: rgba(192, 132, 252, 0.2); box-shadow: 0 4px 24px rgba(192, 132, 252, 0.06); }
+        [data-accent="purple"]:hover .gs-step__icon { box-shadow: 0 0 32px rgba(192, 132, 252, 0.2); }
+
+        [data-accent="blue"] .gs-step__icon {
+            background: rgba(56, 189, 248, 0.06);
+            border-color: rgba(56, 189, 248, 0.25);
+            box-shadow: 0 0 20px rgba(56, 189, 248, 0.06);
+            color: var(--blue);
+        }
+        [data-accent="blue"] .gs-step__number { color: var(--blue); }
+        [data-accent="blue"] .gs-step__card::before { background: linear-gradient(90deg, transparent, rgba(56, 189, 248, 0.25), transparent); }
+        [data-accent="blue"] .gs-step__card:hover { border-color: rgba(56, 189, 248, 0.2); box-shadow: 0 4px 24px rgba(56, 189, 248, 0.06); }
+        [data-accent="blue"]:hover .gs-step__icon { box-shadow: 0 0 32px rgba(56, 189, 248, 0.2); }
+
+        [data-accent="orange"] .gs-step__icon {
+            background: rgba(245, 158, 11, 0.06);
+            border-color: rgba(245, 158, 11, 0.25);
+            box-shadow: 0 0 20px rgba(245, 158, 11, 0.06);
+            color: var(--orange);
+        }
+        [data-accent="orange"] .gs-step__number { color: var(--orange); }
+        [data-accent="orange"] .gs-step__card::before { background: linear-gradient(90deg, transparent, rgba(245, 158, 11, 0.25), transparent); }
+        [data-accent="orange"] .gs-step__card:hover { border-color: rgba(245, 158, 11, 0.2); box-shadow: 0 4px 24px rgba(245, 158, 11, 0.06); }
+        [data-accent="orange"]:hover .gs-step__icon { box-shadow: 0 0 32px rgba(245, 158, 11, 0.2); }
+
+        /* Fade-in stagger */
+        .gs-step.fade-in {
+            transition-delay: calc(var(--step-index, 0) * 0.15s);
         }
 
-        .how-card.fade-in.visible {
-            opacity: 1;
-            transform: translateY(0);
+        /* ── DOWNLOAD Section ─────────────────────────────── */
+
+        .dl {
+            padding: 60px 32px 24px;
+        }
+
+        .dl-inner {
+            max-width: 480px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .dl-title {
+            font-family: var(--font-sans);
+            font-weight: 700;
+            font-size: 28px;
+            color: var(--text-primary);
+            margin-bottom: 0;
+            letter-spacing: -0.5px;
+        }
+
+        .dl-buttons {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .dl-buttons .nr-btn-lg {
+            padding: 14px 28px;
+        }
+
+        .dl-buttons .nr-btn-secondary {
+            height: 49px;
+            width: 49px;
+            padding: 0;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .dl-sub {
+            font-size: 14px;
+            color: var(--text-muted);
+            line-height: 1.5;
+            margin-top: 16px;
+            margin-bottom: 0;
+        }
+
+        .dl-sub .dl-soon {
+            display: block;
+            margin-top: 2px;
+            font-size: 13px;
+            opacity: 0.5;
         }
 
         /* ── Footer ────────────────────────────────────── */
 
         .footer {
-            padding: 56px 32px 48px;
-            border-top: 1px solid var(--border);
+            padding: 40px 32px 48px;
             text-align: center;
             display: flex;
             flex-direction: column;
             align-items: center;
             gap: 12px;
-        }
-
-        .footer-quote {
-            font-family: var(--font-sans);
-            font-size: clamp(18px, 2.5vw, 24px);
-            font-weight: 500;
-            letter-spacing: -0.3px;
-            color: var(--text-secondary);
-            text-align: center;
-            padding: 0;
-            margin: 0 0 20px;
-            max-width: 600px;
-            line-height: 1.4;
-        }
-
-        .footer-quote em {
-            font-style: normal;
-            color: var(--green);
         }
 
         .footer-divider {
@@ -937,41 +1006,24 @@
                 font-size: 14px;
             }
 
-            /* HOW */
-            .how {
-                padding: 60px 20px 80px;
-            }
-
-            .how-cards {
-                gap: 36px;
-            }
-
-            .how-card {
-                width: 100%;
-                padding: 18px 20px;
-            }
-
-            .how-card:nth-child(odd),
-            .how-card:nth-child(even) {
-                align-self: stretch;
-            }
-
-            .how-card__title {
-                font-size: 17px;
-            }
-
-            .how-card__desc {
-                font-size: 13px;
-            }
-
-            /* Hide connector on mobile */
-            .how-flow__connector {
-                display: none;
-            }
+            /* GET STARTED */
+            .gs { padding: 60px 20px 80px; }
+            .gs-timeline { max-width: 100%; }
+            .gs-timeline::before { left: 27px; top: 44px; bottom: 44px; }
+            .gs-step { grid-template-columns: 56px 1fr; gap: 16px; padding-bottom: 8px; }
+            .gs-step__marker { padding-top: 16px; }
+            .gs-step__icon { width: 48px; height: 48px; border-radius: 14px; }
+            .gs-step__icon svg { width: 22px; height: 22px; }
+            .gs-step__card { padding: 20px; }
+            .gs-step__title { font-size: 18px; }
+            .gs-step__desc { font-size: 14px; }
+            .dl { padding: 40px 20px 20px; }
+            .dl-title { font-size: 22px; }
+            .dl-sub { font-size: 13px; }
 
             /* Footer */
             .footer {
-                padding: 56px 20px 36px;
+                padding: 36px 20px 36px;
             }
         }
     </style>
@@ -993,34 +1045,26 @@
         </a>
     </div>
     <div class="navbar-right">
-        <a href="download.html" class="navbar-link">Download</a>
-        <a href="about.html" class="navbar-link">About</a>
-        <a href="docs.html" class="navbar-link">Docs</a>
-        <a href="https://github.com/ratspeak" class="nr-btn" target="_blank" rel="noopener noreferrer">
-            GitHub
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17l10-10"/><path d="M7 7h10v10"/></svg>
+        <button class="navbar-hamburger" id="navHamburger" aria-label="Menu">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/></svg>
+        </button>
+        <div class="navbar-sep"></div>
+        <a href="https://github.com/ratspeak" class="navbar-gh" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
         </a>
     </div>
-    <button class="navbar-hamburger" id="navHamburger" aria-label="Menu">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/></svg>
-    </button>
 </nav>
-<div class="navbar-mobile-menu" id="navMobileMenu">
+<div class="navbar-menu" id="navMobileMenu">
     <a href="download.html">Download</a>
     <a href="about.html">About</a>
     <a href="docs.html">Docs</a>
-    <div class="mobile-divider"></div>
-    <a href="https://github.com/ratspeak" target="_blank" rel="noopener noreferrer">
-        GitHub
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17l10-10"/><path d="M7 7h10v10"/></svg>
-    </a>
 </div>
 
 <!-- ── Hero ────────────────────────────────────────────── -->
 <section class="hero">
     <div class="hero-text">
-        <h1>Your Network.<br>Your <span class="accent" id="hero-cycle">Freedom.</span></h1>
-        <p class="hero-sub">No sign-up. No payment. No catch. An alternative way to communicate, resistant to chaos, where privacy is fundamental.</p>
+        <h1>New Networks.<br>New <span class="accent" id="hero-cycle">Privacy.</span></h1>
+        <p class="hero-sub">No sign-up. No payment. No catch. An alternative way to communicate, resilient to chaos, where privacy is fundamental.</p>
         <p class="hero-built-on">Built with <a href="https://github.com/markqvist/Reticulum" target="_blank" rel="noopener noreferrer">Reticulum</a></p>
         <div class="hero-buttons">
             <a href="download.html" class="nr-btn nr-btn-lg">
@@ -1051,7 +1095,7 @@
         <div class="why-feature__text">
             <span class="why-feature__number">01</span>
             <h3 class="why-feature__title">No Account</h3>
-            <p class="why-feature__tagline">Say goodbye to e-mail or phone number. There's no accounts. No signing up. Your identity is a key that only you can manage.</p>
+            <p class="why-feature__tagline">Say goodbye to e-mail or phone numbers. There's no registration. No database. Your identity is a public key that only you manage.</p>
             <div class="why-feature__accent-line"></div>
         </div>
         <div class="why-feature__visual">
@@ -1122,7 +1166,7 @@
         <div class="why-feature__text">
             <span class="why-feature__number">02</span>
             <h3 class="why-feature__title">Privacy First</h3>
-            <p class="why-feature__tagline">It doesn't stop at end-to-end encrypted, the entire stack is secure. Safe even in an environment where all peers are hostile.</p>
+            <p class="why-feature__tagline">End-to-end encrypted messaging, with an encrypted data-layer underneath. Privacy is a fundamental freedom and right.</p>
             <div class="why-feature__accent-line"></div>
         </div>
         <div class="why-feature__visual">
@@ -1219,8 +1263,8 @@
     <div class="why-feature why-feature--left fade-in" data-accent="orange">
         <div class="why-feature__text">
             <span class="why-feature__number">03</span>
-            <h3 class="why-feature__title">Chaos Resistant</h3>
-            <p class="why-feature__tagline">Ratspeak is transport agnostic. Any data layer can be woven in to the mesh network, all speaking to each other, with the same network - same security.</p>
+            <h3 class="why-feature__title">Built Resilient</h3>
+            <p class="why-feature__tagline">Transport-agnostic — any communication protocol can be woven in to the network. All speaking to each other, with the same security, and same system.</p>
             <div class="why-feature__accent-line"></div>
         </div>
         <div class="why-feature__visual">
@@ -1290,7 +1334,7 @@
         <div class="why-feature__text">
             <span class="why-feature__number">04</span>
             <h3 class="why-feature__title">Open Source</h3>
-            <p class="why-feature__tagline">Everything you see is open source, so be curious. Don't just trust things, verify them yourself.</p>
+            <p class="why-feature__tagline">We believe in open source. Everything you see is available on GitHub. Be curious, don't trust blindly, and verify things yourself.</p>
             <div class="why-feature__accent-line"></div>
         </div>
         <div class="why-feature__visual">
@@ -1371,70 +1415,88 @@
 <!-- ── Divider ─────────────────────────────────────────── -->
 <div class="section-divider"></div>
 
-<!-- ── HOW IT WORKS ────────────────────────────────────── -->
-<section class="how" id="how-it-works">
-    <h2 class="section-heading fade-in">How It Works</h2>
+<!-- ── GET STARTED ────────────────────────────────────── -->
+<section class="gs" id="get-started">
+    <h2 class="section-heading fade-in">Getting Started</h2>
 
-    <div class="how-flow" id="how-flow">
-        <!-- SVG connector path — dynamically computed by JS -->
-        <svg class="how-flow__connector" id="how-connector" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-                <filter id="pktGlow" x="-100%" y="-100%" width="300%" height="300%">
-                    <feGaussianBlur stdDeviation="3" result="blur"/>
-                    <feComposite in="SourceGraphic" in2="blur" operator="over"/>
-                </filter>
-            </defs>
-            <path id="how-path" d="" stroke="var(--border-light)" stroke-width="1.5" fill="none" opacity="0.3"/>
-            <circle r="4" fill="var(--green)" opacity="0.8" filter="url(#pktGlow)">
-                <animateMotion dur="6s" repeatCount="indefinite">
-                    <mpath href="#how-path"/>
-                </animateMotion>
-            </circle>
-            <circle r="3" fill="var(--green)" opacity="0.45">
-                <animateMotion dur="6s" repeatCount="indefinite" begin="3s">
-                    <mpath href="#how-path"/>
-                </animateMotion>
-            </circle>
-        </svg>
-
-        <!-- Cards stack -->
-        <div class="how-cards" id="how-cards">
-            <div class="how-card fade-in" style="--step-index: 0;">
-                <div class="how-card__badge">1</div>
-                <h3 class="how-card__title">Create an Identity</h3>
-                <p class="how-card__desc">Your device generates its own cryptographically secure keys. No account. No signup.</p>
+    <div class="gs-timeline" id="gs-timeline">
+        <div class="gs-step fade-in" style="--step-index: 0;" data-accent="green">
+            <div class="gs-step__marker">
+                <div class="gs-step__icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                </div>
+                <span class="gs-step__number">01</span>
             </div>
-
-            <div class="how-card fade-in" style="--step-index: 1;">
-                <div class="how-card__badge">2</div>
-                <h3 class="how-card__title">Connect to Networks</h3>
-                <p class="how-card__desc">Connect to a device, network, or create one to begin finding other available peers.</p>
-            </div>
-
-            <div class="how-card fade-in" style="--step-index: 2;">
-                <div class="how-card__badge">3</div>
-                <h3 class="how-card__title">Route Formation</h3>
-                <p class="how-card__desc">Nodes learn who can reach who and form efficient routing on their own. No servers. No central list.</p>
-            </div>
-
-            <div class="how-card fade-in" style="--step-index: 3;">
-                <div class="how-card__badge">4</div>
-                <h3 class="how-card__title">Always Encrypted</h3>
-                <p class="how-card__desc">Messages are end-to-end encrypted prior to leaving your device. The network knows data is moving, but not where, or who it's from.</p>
-            </div>
-
-            <div class="how-card fade-in" style="--step-index: 4;">
-                <div class="how-card__badge">5</div>
-                <h3 class="how-card__title">Send Over Anything</h3>
-                <p class="how-card__desc">Data travels through any available link - Radio, WiFi, TCP, BLE, etc., until they reach the desired recipient.</p>
+            <div class="gs-step__card">
+                <h3 class="gs-step__title">Download Ratspeak</h3>
+                <p class="gs-step__desc">Flash firmware to your T-Deck or Cardputer directly from your browser — no drivers, no terminal.</p>
             </div>
         </div>
+
+        <div class="gs-step fade-in" style="--step-index: 1;" data-accent="purple">
+            <div class="gs-step__marker">
+                <div class="gs-step__icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 11-7.778 7.778 5.5 5.5 0 017.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
+                </div>
+                <span class="gs-step__number">02</span>
+            </div>
+            <div class="gs-step__card">
+                <h3 class="gs-step__title">Create Your Identity</h3>
+                <p class="gs-step__desc">Your device generates a cryptographic key pair on first boot. No account, no email, no phone number.</p>
+            </div>
+        </div>
+
+        <div class="gs-step fade-in" style="--step-index: 2;" data-accent="blue">
+            <div class="gs-step__marker">
+                <div class="gs-step__icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="2"/><path d="M16.24 7.76a6 6 0 010 8.49m-8.48-.01a6 6 0 010-8.49m11.31-2.82a10 10 0 010 14.14m-14.14 0a10 10 0 010-14.14"/></svg>
+                </div>
+                <span class="gs-step__number">03</span>
+            </div>
+            <div class="gs-step__card">
+                <h3 class="gs-step__title">Join the Network</h3>
+                <p class="gs-step__desc">Connect over LoRa, WiFi, or TCP/IP and watch the mesh route itself — no configuration, no central server.</p>
+            </div>
+        </div>
+
+        <div class="gs-step fade-in" style="--step-index: 3;" data-accent="orange">
+            <div class="gs-step__marker">
+                <div class="gs-step__icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+                </div>
+                <span class="gs-step__number">04</span>
+            </div>
+            <div class="gs-step__card">
+                <h3 class="gs-step__title">Communicate Freely</h3>
+                <p class="gs-step__desc">Send encrypted messages across any path the mesh offers. Your traffic is ciphertext from the moment it leaves your hands.</p>
+            </div>
+        </div>
+    </div>
+
+</section>
+
+<!-- ── Divider ─────────────────────────────────────────── -->
+<div class="section-divider"></div>
+
+<!-- ── DOWNLOAD ───────────────────────────────────────── -->
+<section class="dl" id="download">
+    <div class="dl-inner fade-in">
+        <h3 class="dl-title">Download Ratspeak</h3>
+        <div class="dl-buttons">
+            <a href="download.html" class="nr-btn nr-btn-lg">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                Get Started
+            </a>
+            <a href="https://github.com/ratspeak" class="nr-btn nr-btn-secondary" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+            </a>
+        </div>
+        <p class="dl-sub">Available on T-Deck &amp; Cardputer Adv.<span class="dl-soon">Windows, macOS, and Linux coming soon.</span></p>
     </div>
 </section>
 
 <!-- ── Footer ──────────────────────────────────────────── -->
 <footer class="footer">
-    <p class="footer-quote">Privacy <em>shouldn&rsquo;t</em> be opt-in.</p>
     <div class="footer-divider"></div>
     <svg class="footer-logo" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
         <ellipse cx="11" cy="13.5" rx="8" ry="4"/>
@@ -1909,7 +1971,7 @@
     });
 
     // Hero text cycling
-    var words = ['Freedom.', 'Privacy.', 'Control.'];
+    var words = ['Privacy.', 'Freedom.', 'Foundation.'];
     var idx = 0;
     var el = document.getElementById('hero-cycle');
     if (el) {
@@ -1942,69 +2004,22 @@
         });
     }
 
-    // How It Works — dynamic connector path + reveal
-    var howFlow = document.getElementById('how-flow');
-    var howConnector = document.getElementById('how-connector');
-    var howPath = document.getElementById('how-path');
-    var howCards = document.querySelectorAll('.how-card');
-
-    function computeConnectorPath() {
-        if (!howFlow || !howConnector || !howPath || howCards.length === 0) return;
-        if (window.getComputedStyle(howConnector).display === 'none') return;
-
-        var flowRect = howFlow.getBoundingClientRect();
-        var points = [];
-        howCards.forEach(function(card) {
-            var r = card.getBoundingClientRect();
-            points.push({
-                x: (r.left + r.width / 2) - flowRect.left,
-                y: (r.top + r.height / 2) - flowRect.top
-            });
-        });
-        if (points.length < 2) return;
-
-        var w = flowRect.width;
-        var h = flowRect.height;
-        howConnector.setAttribute('viewBox', '0 0 ' + w + ' ' + h);
-
-        var d = 'M' + points[0].x + ',' + points[0].y;
-        for (var i = 0; i < points.length - 1; i++) {
-            var cur = points[i];
-            var nxt = points[i + 1];
-            var midY = (cur.y + nxt.y) / 2;
-            d += ' C' + cur.x + ',' + midY + ' ' + nxt.x + ',' + midY + ' ' + nxt.x + ',' + nxt.y;
+    // Get Started — timeline reveal on scroll
+    (function() {
+        var timeline = document.getElementById('gs-timeline');
+        if (!timeline) return;
+        if ('IntersectionObserver' in window) {
+            new IntersectionObserver(function(entries) {
+                entries.forEach(function(entry) {
+                    if (entry.isIntersecting) {
+                        timeline.classList.add('revealed');
+                    }
+                });
+            }, { threshold: 0.1 }).observe(timeline);
+        } else {
+            timeline.classList.add('revealed');
         }
-        howPath.setAttribute('d', d);
-    }
-
-    function initConnectorPath() {
-        computeConnectorPath();
-        setTimeout(computeConnectorPath, 300);
-    }
-
-    if (document.readyState === 'complete') {
-        initConnectorPath();
-    } else {
-        window.addEventListener('load', initConnectorPath);
-    }
-
-    var resizeTimer;
-    window.addEventListener('resize', function() {
-        clearTimeout(resizeTimer);
-        resizeTimer = setTimeout(computeConnectorPath, 200);
-    });
-
-    if (howConnector) {
-        var connectorObserver = new IntersectionObserver(function(entries) {
-            entries.forEach(function(entry) {
-                if (entry.isIntersecting) {
-                    howConnector.classList.add('revealed');
-                    connectorObserver.unobserve(entry.target);
-                }
-            });
-        }, { threshold: 0.1 });
-        connectorObserver.observe(howConnector);
-    }
+    })();
 })();
 </script>
 
@@ -2037,17 +2052,22 @@
     var btn = document.getElementById('navHamburger');
     var menu = document.getElementById('navMobileMenu');
     if (!btn || !menu) return;
-    btn.addEventListener('click', function() {
-        var open = menu.classList.toggle('open');
-        btn.innerHTML = open
-            ? '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="6" y1="18" x2="18" y2="6"/></svg>'
-            : '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/></svg>';
+    var iconOpen = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="6" y1="18" x2="18" y2="6"/></svg>';
+    var iconClosed = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/></svg>';
+    function close() {
+        menu.classList.remove('open');
+        btn.innerHTML = iconClosed;
+    }
+    btn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        var isOpen = menu.classList.toggle('open');
+        btn.innerHTML = isOpen ? iconOpen : iconClosed;
     });
     menu.addEventListener('click', function(e) {
-        if (e.target.closest('a')) {
-            menu.classList.remove('open');
-            btn.innerHTML = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/></svg>';
-        }
+        if (e.target.closest('a')) close();
+    });
+    document.addEventListener('click', function(e) {
+        if (!btn.contains(e.target) && !menu.contains(e.target)) close();
     });
 })();
 </script>
